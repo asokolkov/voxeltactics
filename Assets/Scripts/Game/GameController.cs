@@ -19,10 +19,7 @@ public class GameController : MonoBehaviour
     [NonSerialized] public Board EnemyBoard;
     
     [NonSerialized] public Piece SelectedPiece;
-    
-    private const float SquareSize = 1;
-    private const int BoardSize = 3;
-    
+
     private void Awake()
     {
         SetDependencies();
@@ -44,23 +41,33 @@ public class GameController : MonoBehaviour
         EnemyBoard = enemyBoardGO.GetComponent<Board>();
     }
 
-    public void OnClick(Vector3 inputPosition, GameObject selectedObject)
+    public void OnClick(Vector3 inputPosition, GameObject go)
     {
-        var board = selectedObject.GetComponent<Board>();
-        var coords = board.CalculateCoords(inputPosition);
-        var piece = board.GetPieceOnSquare(coords);
+        if (go.CompareTag("Character")) OnCharacterClick(go);
+        else if (go.CompareTag("Board")) OnBoardClick(inputPosition);
+    }
+
+    private void OnBoardClick(Vector3 position)
+    {
+        if (!SelectedPiece) return;
+        var coords = SelectedPiece.Board.CalculateCoords(position);
+        MovePiece(coords, SelectedPiece);
+    }
+
+    private void OnCharacterClick(GameObject go)
+    {
+        var piece = go.GetComponent<Piece>();
         if (SelectedPiece)
         {
-            if (piece != null && SelectedPiece == piece) 
+            if (SelectedPiece == piece) 
                 DeselectPiece();
-            else if (piece != null && SelectedPiece != piece)
+            else if (SelectedPiece != piece)
                 SelectPiece(piece);
-            else
-                MovePiece(coords, SelectedPiece);
         }
-        else if (piece != null) SelectPiece(piece);
+        else 
+            SelectPiece(piece);
     }
-    
+
     private void MovePiece(Vector2Int coords, Piece piece)
     {
         piece.Board.UpdateBoardOnPieceMove(coords, piece.Position, 
