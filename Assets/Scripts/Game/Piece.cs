@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public abstract class Piece : MonoBehaviour
@@ -10,7 +11,6 @@ public abstract class Piece : MonoBehaviour
     
     public Board Board { get; set; }
     public Vector2Int Position { get; set; }
-    public bool active;
     
     public List<Vector2Int> allyInteractionPositions;
     public List<Vector2Int> enemyInteractionPositions;
@@ -21,7 +21,6 @@ public abstract class Piece : MonoBehaviour
     {
         allyInteractionPositions = new List<Vector2Int>();
         enemyInteractionPositions = new List<Vector2Int>();
-        active = true;
     }
 
     public void SetData(Vector2Int coords, Board board)
@@ -29,5 +28,12 @@ public abstract class Piece : MonoBehaviour
         Position = coords;
         Board = board;
         transform.position = board.CalculatePosition(coords);
+    }
+
+    public void MovePiece(Vector2Int coords)
+    {
+        var destination = Board.CalculatePosition(coords);
+        Position = coords;
+        transform.position = destination;
     }
 }

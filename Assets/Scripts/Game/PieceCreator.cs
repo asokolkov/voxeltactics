@@ -17,7 +17,6 @@ public class PieceCreator : MonoBehaviour
 
     public GameObject CreatePiece(string title)
     {
-        Debug.Log(2);
         var prefab = titleToPieceDictionary[title];
         return prefab ? Instantiate(prefab) : null;
     }
