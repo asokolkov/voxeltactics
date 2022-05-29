@@ -23,17 +23,18 @@ public abstract class Piece : MonoBehaviour
         enemyInteractionPositions = new List<Vector2Int>();
     }
 
-    public void SetData(Vector2Int coords, Board board)
+    public void FillData(Vector2Int coords, Board board)
     {
         Position = coords;
         Board = board;
-        transform.position = board.CalculatePosition(coords);
+        MovePieceTo(coords);
     }
-
-    public void MovePiece(Vector2Int coords)
+    
+    public void MovePieceTo(Vector2Int coords)
     {
-        var destination = Board.CalculatePosition(coords);
-        Position = coords;
-        transform.position = destination;
+        var tile = Board.GetTileWithPiece(this);
+        if (tile != null) tile.Piece = null;
+        transform.position = Board.GetPositionFromCoords(coords);
+        Board.Tiles[coords.x, coords.y].Piece = this;
     }
 }

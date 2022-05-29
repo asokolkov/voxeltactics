@@ -2,13 +2,11 @@
 
 public class Player
 {
-    public Board Board { get; set; }
     public List<Piece> AlivePieces { get; set; }
     public List<Piece> DeadPieces { get; set; }
 
-    public Player(Board board)
+    public Player()
     {
-        Board = board;
         AlivePieces = new List<Piece>();
         DeadPieces = new List<Piece>();
     }
@@ -31,16 +29,5 @@ public class Player
     public void RemoveDeadPiece(Piece piece)
     {
         if (!DeadPieces.Contains(piece)) DeadPieces.Remove(piece);
-    }
-
-    public void GetAllPossibleInteractions()
-    {
-        foreach (var piece in AlivePieces)
-        {
-            if (Board.HasPiece(piece))
-            {
-                piece.SelectInteractionPositions();
-            }
-        }
     }
 }

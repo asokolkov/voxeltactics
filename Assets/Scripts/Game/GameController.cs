@@ -12,48 +12,49 @@ public class GameController : MonoBehaviour
     public Player Enemy;
     public Player ActivePlayer;
 
-    public GameObject allyBoardGO;
-    public GameObject enemyBoardGO;
-    
-    [NonSerialized] public Board AllyBoard;
-    [NonSerialized] public Board EnemyBoard;
-    
+    public Board allyBoard;
+
     [NonSerialized] public Piece SelectedPiece;
+
+    private const float Raise = 0.2f;
 
     private void Awake()
     {
         SetDependencies();
-        Ally = new Player(AllyBoard);
-        Enemy = new Player(EnemyBoard);
+        Ally = new Player();
+        Enemy = new Player();
     }
     
     private void Start()
     {
         ActivePlayer = Ally;
-        InitializePiece(new Vector2Int(0, 0), EnemyBoard, "Penguin");
-        GetAllPossiblePlayerBoardInteractions(ActivePlayer);
+        InitializePiece(new Vector2Int(0, 0), allyBoard, "Penguin");
+        InitializePiece(new Vector2Int(0, 1), allyBoard, "Penguin");
     }
     
     private void SetDependencies()
     {
         pieceCreator = GetComponent<PieceCreator>();
-        AllyBoard = allyBoardGO.GetComponent<Board>();
-        EnemyBoard = enemyBoardGO.GetComponent<Board>();
     }
-
+    
     public void OnClick(Vector3 inputPosition, GameObject go)
     {
         if (go.CompareTag("Character")) OnCharacterClick(go);
-        else if (go.CompareTag("Board")) OnBoardClick(inputPosition);
+        else if (go.CompareTag("Tile")) OnTileClick(go);
     }
 
-    private void OnBoardClick(Vector3 position)
+    private void OnVoidClick()
+    {
+        DeselectPiece();
+    }
+
+    private void OnTileClick(GameObject go)
     {
         if (!SelectedPiece) return;
-        var coords = SelectedPiece.Board.CalculateCoords(position);
-        MovePiece(coords, SelectedPiece);
+        var tile = go.GetComponent<Tile>();
+        if (tile.Piece == null) MovePieceOnTile(tile);
     }
-
+    
     private void OnCharacterClick(GameObject go)
     {
         var piece = go.GetComponent<Piece>();
@@ -62,41 +63,37 @@ public class GameController : MonoBehaviour
             if (SelectedPiece == piece) 
                 DeselectPiece();
             else if (SelectedPiece != piece)
+            {
+                DeselectPiece();
                 SelectPiece(piece);
+            }
         }
         else 
             SelectPiece(piece);
     }
-
-    private void MovePiece(Vector2Int coords, Piece piece)
+    
+    private void MovePieceOnTile(Tile tile)
     {
-        piece.Board.UpdateBoardOnPieceMove(coords, piece.Position, 
-            piece, null);
-        SelectedPiece.MovePiece(coords);
-        DeselectPiece();
+        var tileCoords = SelectedPiece.Board.GetTileCoords(tile);
+        SelectedPiece.MovePieceTo(tileCoords);
+        DeselectPiece(false);
     }
     
     private void SelectPiece(Piece piece)
     {
         SelectedPiece = piece;
-        piece.transform.position += new Vector3(0, 0.1f, 0);
+        piece.transform.position += new Vector3(0, Raise, 0);
     }
     
-    private void DeselectPiece()
+    private void DeselectPiece(bool drop = true)
     {
+        if (drop) SelectedPiece.transform.position -= new Vector3(0, Raise, 0);
         SelectedPiece = null;
     }
-
-    private void GetAllPossiblePlayerBoardInteractions(Player player)
-    {
-        player.GetAllPossibleInteractions();
-    }
-
+    
     private void InitializePiece(Vector2Int squareCoords, Board board, string title)
     {
         var piece = pieceCreator.CreatePiece(title).GetComponent<Piece>();
-        piece.SetData(squareCoords, board);
-        
-        board.SetPieceOnBoard(squareCoords, piece);
+        piece.FillData(squareCoords, board);
     }
 }
