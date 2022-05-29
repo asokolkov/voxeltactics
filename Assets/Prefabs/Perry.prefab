@@ -10,9 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 3633266606510833465}
   - component: {fileID: -5053907746157940660}
+  - component: {fileID: 8863791752647450492}
   m_Layer: 0
   m_Name: Perry
-  m_TagString: Untagged
+  m_TagString: Character
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -46,9 +47,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   title: Perry
-  active: 0
   allyInteractionPositions: []
   enemyInteractionPositions: []
+--- !u!65 &8863791752647450492
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4116329736692409731}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.6, y: 1.2, z: 0.6}
+  m_Center: {x: 0, y: 0.6, z: 0}
 --- !u!1 &4948875406935514458
 GameObject:
   m_ObjectHideFlags: 0
