@@ -53,7 +53,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0aae3baf82644fc988adefbe16bc546, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tilesArray:
+  tiles:
   - {fileID: 3919901551105949019}
   - {fileID: 5595241862939993769}
   - {fileID: 5720746353448621183}

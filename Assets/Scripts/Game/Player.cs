@@ -1,33 +1,47 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEngine;
 
-public class Player
+[RequireComponent(typeof(PieceCreator))]
+public class Player : MonoBehaviour
 {
-    public List<Piece> AlivePieces { get; set; }
-    public List<Piece> DeadPieces { get; set; }
+    private PieceCreator pieceCreator;
+    
+    public Board board;
+    [NonSerialized] public Piece SelectedPiece;
+    [NonSerialized] public List<Piece> Pieces;
+    
+    private const float Raise = 0.2f;
 
-    public Player()
+    private void Awake()
     {
-        AlivePieces = new List<Piece>();
-        DeadPieces = new List<Piece>();
+        pieceCreator = GetComponent<PieceCreator>();
+        Pieces = new List<Piece>();
     }
 
-    public void AddAlivePiece(Piece piece)
+    public void SelectPiece(Piece piece)
     {
-        if (!AlivePieces.Contains(piece)) AlivePieces.Add(piece);
+        SelectedPiece = piece;
+        piece.transform.position += new Vector3(0, Raise, 0);
+    }
+
+    public void DeselectPiece(bool drop = true)
+    {
+        if (drop) SelectedPiece.transform.position -= new Vector3(0, Raise, 0);
+        SelectedPiece = null;
+    }
+
+    public void InitializePiece(Vector2Int coords, string title)
+    {
+        var piece = pieceCreator.CreatePiece(title).GetComponent<Piece>();
+        Pieces.Add(piece);
+        Move(piece, coords);
     }
     
-    public void AddDeadPiece(Piece piece)
+    public void Move(Piece piece, Vector2Int coords)
     {
-        if (!DeadPieces.Contains(piece)) DeadPieces.Add(piece);
-    }
-    
-    public void RemoveAlivePiece(Piece piece)
-    {
-        if (AlivePieces.Contains(piece)) AlivePieces.Remove(piece);
-    }
-    
-    public void RemoveDeadPiece(Piece piece)
-    {
-        if (!DeadPieces.Contains(piece)) DeadPieces.Remove(piece);
+        piece.Coords = coords;
+        piece.transform.position = board.GetPiecePosition(coords);
     }
 }

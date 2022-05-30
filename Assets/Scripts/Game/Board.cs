@@ -1,51 +1,48 @@
 ﻿using System;
+using System.Linq;
 using JetBrains.Annotations;
 using UnityEngine;
 
 public class Board : MonoBehaviour
 {
-    public Tile[] tilesArray;
-    
-    [NonSerialized] public Tile[,] Tiles;
+    public Tile[] tiles;
 
     private const int BoardSize = 3;
     private const float TileHeight = 1;
     
     private void Awake()
     {
-        Tiles = new Tile[BoardSize, BoardSize];
-        
-        var c = 0;
-        for (var i = 0; i < BoardSize; i++)
-        for (var j = 0; j < BoardSize; j++)
+        NumerateTiles();
+    }
+
+    private void NumerateTiles()
+    {
+        var row = 0;
+        var col = 0;
+        foreach (var tile in tiles)
         {
-            Tiles[i, j] = tilesArray[c];
-            c++;
+            tile.Coords = new Vector2Int(row, col);
+            row++;
+            if (row >= BoardSize - 1)
+            {
+                col++;
+                row = 0;
+            }
         }
     }
 
-    public Vector3 GetPositionFromCoords(Vector2Int coords)
+    public Tile GetTile(Vector2Int coords)
     {
-        return Tiles[coords.x, coords.y].transform.position + 
-               new Vector3(0, TileHeight, 0);
+        var foundTiles = tiles
+            .Select(x => x)
+            .Where(x => x.Coords == coords)
+            .ToList();
+        if (foundTiles.Count != 1) throw new ArgumentException("Tile not found"); 
+        return foundTiles.First();
     }
 
-    public Vector2Int GetTileCoords(Tile tile)
+    public Vector3 GetPiecePosition(Vector2Int coords)
     {
-        for (var i = 0; i < BoardSize; i++)
-        for (var j = 0; j < BoardSize; j++)
-            if (Tiles[i, j] == tile)
-                return new Vector2Int(i, j);
-        throw new ArgumentOutOfRangeException("Tile not found");
-    }
-
-    [CanBeNull]
-    public Tile GetTileWithPiece(Piece piece)
-    {
-        for (var i = 0; i < BoardSize; i++)
-        for (var j = 0; j < BoardSize; j++)
-            if (Tiles[i, j].Piece == piece)
-                return Tiles[i, j];
-        return null;
+        return GetTile(coords).transform.position + new Vector3(0, TileHeight, 0);
     }
 }

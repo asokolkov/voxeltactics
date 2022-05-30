@@ -4,5 +4,5 @@ using UnityEngine;
 public class Tile : MonoBehaviour
 {
     public TileType tileType;
-    [NonSerialized] public Piece Piece;
+    public Vector2Int Coords { get; set; }
 }
