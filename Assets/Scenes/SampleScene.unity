@@ -451,8 +451,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1632544991}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.18, z: 1.65}
-  m_LocalScale: {x: 3.23, y: 1, z: 0.01}
+  m_LocalPosition: {x: 0, y: -2.39, z: 5.05}
+  m_LocalScale: {x: 9.89, y: 1.2, z: 0.01}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1455079112}
@@ -478,7 +478,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1632544991}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -558,7 +558,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6075806362916263499, guid: c1dd6d7ea0310504c8568d68d5e93851, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 1.08
       objectReference: {fileID: 0}
     - target: {fileID: 6075806362916263499, guid: c1dd6d7ea0310504c8568d68d5e93851, type: 3}
       propertyPath: m_LocalRotation.w
@@ -621,6 +621,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   board: {fileID: 1109684549}
+  inventory: {fileID: 1632544996}
 --- !u!114 &1969079543
 MonoBehaviour:
   m_ObjectHideFlags: 0

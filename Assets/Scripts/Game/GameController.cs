@@ -13,6 +13,10 @@ public class GameController : MonoBehaviour
     {
         activePlayer = ally;
         activePlayer.InitializePiece(new Vector2Int(0, 0), "Penguin");
+        activePlayer.InitializePiece(new Vector2Int(1, 0), "Penguin");
+        activePlayer.InitializePiece(new Vector2Int(0, 1), "Penguin");
+        activePlayer.InitializePiece(new Vector2Int(1, 1), "Penguin");
+        activePlayer.InitializePiece(new Vector2Int(1, 2), "Penguin");
     }
 
     public void OnClick(Vector3 inputPosition, GameObject go)
@@ -24,15 +28,22 @@ public class GameController : MonoBehaviour
     
     private void OnInventoryClick()
     {
-        // if (!activePlayer.selectedPiece) return;
-        // activePlayer.MoveToInventory(selectedPiece);
+        if (!activePlayer.SelectedPiece) return;
+        if (activePlayer.inventory.Contains(activePlayer.SelectedPiece))
+            activePlayer.DeselectPiece();
+        else
+            activePlayer.MoveToInventory(activePlayer.SelectedPiece);
     }
     
     private void OnTileClick(GameObject go)
     {
         if (!activePlayer.SelectedPiece) return;
+        var inInventory = activePlayer.inventory.Contains(activePlayer.SelectedPiece);
+        if (inInventory)
+            activePlayer.RemoveFromInventory(activePlayer.SelectedPiece);
         var tile = go.GetComponent<Tile>();
-        activePlayer.Move(activePlayer.SelectedPiece, tile.Coords);
+        if (tile.occupied) return;
+        activePlayer.Move(activePlayer.SelectedPiece, tile, inInventory);
         activePlayer.DeselectPiece(false);
     }
     

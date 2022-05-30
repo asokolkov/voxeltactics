@@ -41,8 +41,22 @@ public class Board : MonoBehaviour
         return foundTiles.First();
     }
 
-    public Vector3 GetPiecePosition(Vector2Int coords)
+    public Vector3 OccupyTileOn(Vector2Int coords)
     {
-        return GetTile(coords).transform.position + new Vector3(0, TileHeight, 0);
+        var tile = GetTile(coords);
+        tile.occupied = true;
+        return tile.transform.position + new Vector3(0, TileHeight, 0);
+    }
+
+    public void ReleaseTileOn(Vector2Int coords)
+    {
+        var tile = GetTile(coords);
+        tile.occupied = false;
+    }
+
+    public Vector3 Occupy(Tile tile)
+    {
+        tile.occupied = true;
+        return tile.transform.position + new Vector3(0, TileHeight, 0);
     }
 }

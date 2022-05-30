@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
     private PieceCreator pieceCreator;
     
     public Board board;
+    public Inventory inventory;
     [NonSerialized] public Piece SelectedPiece;
     [NonSerialized] public List<Piece> Pieces;
     
@@ -41,7 +42,27 @@ public class Player : MonoBehaviour
     
     public void Move(Piece piece, Vector2Int coords)
     {
+        board.ReleaseTileOn(piece.Coords);
         piece.Coords = coords;
-        piece.transform.position = board.GetPiecePosition(coords);
+        piece.transform.position = board.OccupyTileOn(coords);
+    }
+
+    public void Move(Piece piece, Tile tile, bool fromInventory = false)
+    {
+        if (!fromInventory) board.ReleaseTileOn(piece.Coords);
+        piece.Coords = tile.Coords;
+        piece.transform.position = board.Occupy(tile);
+    }
+
+    public void MoveToInventory(Piece piece)
+    {
+        board.ReleaseTileOn(piece.Coords);
+        DeselectPiece();
+        inventory.Add(piece);
+    }
+
+    public void RemoveFromInventory(Piece piece)
+    {
+        inventory.Remove(piece);
     }
 }
