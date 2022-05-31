@@ -43,7 +43,7 @@ public class Player : MonoBehaviour
     
     public void Move(Piece piece, Vector2Int coords)
     {
-        board.ReleaseTileOn(piece.Coords);
+        /* if (!fromInventory)*/ board.ReleaseTileOn(piece.Coords);
         piece.Coords = coords;
         piece.transform.position = board.OccupyTileOn(coords);
     }
@@ -69,9 +69,11 @@ public class Player : MonoBehaviour
 
     public void AddRandomPieceToInventory()
     {
-        if (inventory.Pieces.Count >= inventory.maxPiecesAmount) return;
+        var maxReached = inventory.Pieces.Count == inventory.maxPiecesAmount &&
+                inventory.Pieces[^1].title == "AddButton";
+        if (maxReached) inventory.DestroyAddButton();
         var piece = pieceCreator.CreateRandomPiece().GetComponent<Piece>();
         Pieces.Add(piece);
-        inventory.Add(piece);
+        inventory.Add(piece, maxReached);
     }
 }

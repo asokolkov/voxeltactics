@@ -8,26 +8,38 @@ public class Inventory : MonoBehaviour
     public Transform inventoryCollider;
     public Piece addButton;
     
-    public int maxPiecesAmount = 4;
+    public int maxPiecesAmount;
     private const double ElementWidth = 1;
     private const double Space = 0.2;
 
     private void Awake()
     {
         Pieces = new List<Piece>();
-        Add(Instantiate(addButton));
+        InitializeAddButton();
     }
 
-    public void Add(Piece piece)
+    private void InitializeAddButton(bool center = true)
+    {
+        Add(Instantiate(addButton), true, center);
+    }
+
+    public void DestroyAddButton()
+    {
+        Destroy(Pieces[^1].gameObject);
+        Pieces.Remove(Pieces[^1]);
+    }
+
+    public void Add(Piece piece, bool toEnd = false, bool center = true)
     {
         var piecesAmount = Pieces.Count;
         if (piecesAmount >= maxPiecesAmount) return;
-        Pieces.Add(piece);
+        if (toEnd) Pieces.Add(piece);
+        else Pieces.Insert(piecesAmount - 1, piece);
         piece.transform.position = inventoryCollider.position;
         piece.transform.rotation = Quaternion.Euler(85, 0, 0);
-        CenterHorizontally();
+        if (center) CenterHorizontally();
     }
-    
+
     private void CenterHorizontally()
     {
         var piecesAmount = Pieces.Count;
@@ -58,6 +70,7 @@ public class Inventory : MonoBehaviour
     {
         Pieces.Remove(piece);
         piece.transform.rotation = Quaternion.identity;
+        if (Pieces[^1].title != "AddButton") InitializeAddButton(false);
         CenterHorizontally();
     }
 }
