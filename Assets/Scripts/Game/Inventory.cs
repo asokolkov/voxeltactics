@@ -5,6 +5,7 @@ using UnityEngine;
 public class Inventory : MonoBehaviour
 {
     private List<Piece> pieces;
+    public Transform inventoryCollider;
     
     private const int MaxPiecesAmount = 4;
     private const double ElementWidth = 1;
@@ -20,7 +21,7 @@ public class Inventory : MonoBehaviour
         var piecesAmount = pieces.Count;
         if (piecesAmount >= MaxPiecesAmount) return;
         pieces.Add(piece);
-        piece.transform.position = transform.position;
+        piece.transform.position = inventoryCollider.position;
         piece.transform.rotation = Quaternion.Euler(85, 0, 0);
         CenterHorizontally();
     }
@@ -35,7 +36,7 @@ public class Inventory : MonoBehaviour
         {
             var position = pieces[i].transform.position;
             pieces[i].transform.position = new Vector3(
-                step * (i + 0.5f) - totalWidth / 2 + transform.position.x, 
+                step * (i + 0.5f) - totalWidth / 2 + inventoryCollider.position.x, 
                 position.y, position.z);
         }
     }
