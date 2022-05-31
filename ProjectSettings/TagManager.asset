@@ -9,6 +9,7 @@ TagManager:
   - Tile
   - Inventory
   - AddButton
+  - InteractionSpot
   layers:
   - Default
   - TransparentFX

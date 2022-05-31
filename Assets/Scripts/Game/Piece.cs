@@ -10,5 +10,5 @@ public abstract class Piece : MonoBehaviour
     public string Health { get; set; }
     public Vector2Int Coords { get; set; }
     public PieceStatus pieceStatus;
-    public InteractionCoords[] interactionCoords;
+    public List<Vector2Int> interactionCoords;
 }

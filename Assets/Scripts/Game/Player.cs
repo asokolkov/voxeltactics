@@ -6,31 +6,57 @@ using UnityEngine;
 [RequireComponent(typeof(PieceCreator))]
 public class Player : MonoBehaviour
 {
-    private PieceCreator pieceCreator;
-    
     public Board board;
     public Inventory inventory;
+    public InteractionSpot interactionSpot;
+    
     [NonSerialized] public Piece SelectedPiece;
+    [NonSerialized] public List<InteractionSpot> ShownInteractionSpots;
     [NonSerialized] public List<Piece> Pieces;
+    private PieceCreator pieceCreator;
     
     private const float Raise = 0.2f;
 
     private void Awake()
     {
+        ShownInteractionSpots = new List<InteractionSpot>();
         pieceCreator = GetComponent<PieceCreator>();
         Pieces = new List<Piece>();
     }
 
-    public void SelectPiece(Piece piece)
+    public void SelectPiece(Piece piece, bool showInteractions = false)
     {
         SelectedPiece = piece;
         piece.transform.position += new Vector3(0, Raise, 0);
+        if (showInteractions) ShowInteractions();
+    }
+
+    private void ShowInteractions()
+    {
+        foreach (var coords in SelectedPiece.interactionCoords)
+        {
+            var tile = board.GetTile(coords);
+            var spot = Instantiate(interactionSpot, board.GetSpotPosition(tile), 
+                Quaternion.identity);
+            spot.coords = coords;
+            ShownInteractionSpots.Add(spot);
+        }
     }
 
     public void DeselectPiece(bool drop = true)
     {
         if (drop) SelectedPiece.transform.position -= new Vector3(0, Raise, 0);
         SelectedPiece = null;
+        HideInteractions();
+    }
+
+    private void HideInteractions()
+    {
+        foreach (var spot in ShownInteractionSpots)
+        {
+            Destroy(spot.gameObject);
+        }
+        ShownInteractionSpots.Clear();
     }
 
     public void InitializePiece(Vector2Int coords, string title)
@@ -57,6 +83,7 @@ public class Player : MonoBehaviour
 
     public void MoveToInventory(Piece piece)
     {
+        piece.pieceStatus = PieceStatus.InInventory;
         board.ReleaseTileOn(piece.Coords);
         DeselectPiece();
         inventory.Add(piece);
@@ -64,6 +91,7 @@ public class Player : MonoBehaviour
 
     public void RemoveFromInventory(Piece piece)
     {
+        piece.pieceStatus = PieceStatus.Onboard;
         inventory.Remove(piece);
     }
 

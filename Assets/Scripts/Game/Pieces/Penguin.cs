@@ -6,6 +6,9 @@ public class Penguin : Piece
 {
     private void Awake()
     {
-        interactionCoords = new[] { InteractionCoords.AllyBack };
+        interactionCoords = new List<Vector2Int>
+        {
+            new(2, 2), new(2, 1), new(2, 0)
+        };
     }
 }
