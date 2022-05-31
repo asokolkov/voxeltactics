@@ -8,6 +8,7 @@ TagManager:
   - Character
   - Tile
   - Inventory
+  - AddButton
   layers:
   - Default
   - TransparentFX

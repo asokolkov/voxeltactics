@@ -24,8 +24,14 @@ public class GameController : MonoBehaviour
         if (go.CompareTag("Character")) OnCharacterClick(go);
         else if (go.CompareTag("Tile")) OnTileClick(go);
         else if (go.CompareTag("Inventory")) OnInventoryClick();
+        else if (go.CompareTag("AddButton")) OnAddButtonClick();
     }
-    
+
+    private void OnAddButtonClick()
+    {
+        activePlayer.AddRandomPieceToInventory();
+    }
+
     private void OnInventoryClick()
     {
         if (!activePlayer.SelectedPiece) return;
@@ -38,11 +44,10 @@ public class GameController : MonoBehaviour
     private void OnTileClick(GameObject go)
     {
         if (!activePlayer.SelectedPiece) return;
-        var inInventory = activePlayer.inventory.Contains(activePlayer.SelectedPiece);
-        if (inInventory)
-            activePlayer.RemoveFromInventory(activePlayer.SelectedPiece);
         var tile = go.GetComponent<Tile>();
         if (tile.occupied) return;
+        var inInventory = activePlayer.inventory.Contains(activePlayer.SelectedPiece);
+        if (inInventory) activePlayer.RemoveFromInventory(activePlayer.SelectedPiece);
         activePlayer.Move(activePlayer.SelectedPiece, tile, inInventory);
         activePlayer.DeselectPiece(false);
     }

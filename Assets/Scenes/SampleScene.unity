@@ -153,6 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inventoryCollider: {fileID: 1663468015}
+  addButton: {fileID: 4374867152985897248, guid: da82bef0df1597348a3e81cbf321e515, type: 3}
 --- !u!4 &296265463
 Transform:
   m_ObjectHideFlags: 0

@@ -4,23 +4,25 @@ using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
-    private List<Piece> pieces;
+    [NonSerialized] public List<Piece> Pieces;
     public Transform inventoryCollider;
+    public Piece addButton;
     
-    private const int MaxPiecesAmount = 4;
+    public int maxPiecesAmount = 4;
     private const double ElementWidth = 1;
     private const double Space = 0.2;
 
     private void Awake()
     {
-        pieces = new List<Piece>();
+        Pieces = new List<Piece>();
+        Add(Instantiate(addButton));
     }
 
     public void Add(Piece piece)
     {
-        var piecesAmount = pieces.Count;
-        if (piecesAmount >= MaxPiecesAmount) return;
-        pieces.Add(piece);
+        var piecesAmount = Pieces.Count;
+        if (piecesAmount >= maxPiecesAmount) return;
+        Pieces.Add(piece);
         piece.transform.position = inventoryCollider.position;
         piece.transform.rotation = Quaternion.Euler(85, 0, 0);
         CenterHorizontally();
@@ -28,14 +30,14 @@ public class Inventory : MonoBehaviour
     
     private void CenterHorizontally()
     {
-        var piecesAmount = pieces.Count;
+        var piecesAmount = Pieces.Count;
         var totalWidth = (float) (ElementWidth + Space) * piecesAmount;
         var step = totalWidth / piecesAmount;
 
         for (var i = 0; i < piecesAmount; i++)
         {
-            var position = pieces[i].transform.position;
-            pieces[i].transform.position = new Vector3(
+            var position = Pieces[i].transform.position;
+            Pieces[i].transform.position = new Vector3(
                 step * (i + 0.5f) - totalWidth / 2 + inventoryCollider.position.x, 
                 position.y, position.z);
         }
@@ -49,12 +51,12 @@ public class Inventory : MonoBehaviour
 
     public bool Contains(Piece piece)
     {
-        return pieces.Contains(piece);
+        return Pieces.Contains(piece);
     }
 
     public void Remove(Piece piece)
     {
-        pieces.Remove(piece);
+        Pieces.Remove(piece);
         piece.transform.rotation = Quaternion.identity;
         CenterHorizontally();
     }
