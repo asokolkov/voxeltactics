@@ -17,17 +17,18 @@ public class Board : MonoBehaviour
 
     private void NumerateTiles()
     {
-        var row = 0;
-        var col = 0;
+        var x = 0;
+        var y = 0;
         foreach (var tile in tiles)
         {
-            tile.Coords = new Vector2Int(row, col);
-            row++;
-            if (row >= BoardSize - 1)
+            tile.coords = new Vector2Int(y, x);
+            if (y >= BoardSize - 1)
             {
-                col++;
-                row = 0;
+                x++;
+                y = 0;
             }
+            else y++;
+            
         }
     }
 
@@ -35,7 +36,7 @@ public class Board : MonoBehaviour
     {
         var foundTiles = tiles
             .Select(x => x)
-            .Where(x => x.Coords == coords)
+            .Where(x => x.coords == coords)
             .ToList();
         if (foundTiles.Count != 1) throw new ArgumentException("Tile not found"); 
         return foundTiles.First();

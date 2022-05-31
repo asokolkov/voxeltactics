@@ -50,7 +50,7 @@ public class Player : MonoBehaviour
     public void Move(Piece piece, Tile tile, bool fromInventory = false)
     {
         if (!fromInventory) board.ReleaseTileOn(piece.Coords);
-        piece.Coords = tile.Coords;
+        piece.Coords = tile.coords;
         piece.transform.position = board.Occupy(tile);
     }
 
