@@ -1,68 +1,34 @@
-﻿using System;
-using System.Linq;
-using JetBrains.Annotations;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class Board : MonoBehaviour
 {
     public Tile[] tiles;
 
-    private const int BoardSize = 3;
-    private const float TileHeight = 1;
+    private Cell[,] grid;
     
+    public Cell this[int x, int y] => grid[x, y];
+    
+    private const int BoardSize = 3;
+
     private void Awake()
     {
-        NumerateTiles();
+        FormGrid();
     }
 
-    private void NumerateTiles()
+    private void FormGrid()
     {
-        var x = 0;
-        var y = 0;
-        foreach (var tile in tiles)
-        {
-            tile.coords = new Vector2Int(y, x);
-            if (y >= BoardSize - 1)
-            {
-                x++;
-                y = 0;
-            }
-            else y++;
-            
-        }
+        grid = new Cell[BoardSize, BoardSize];
+        var i = 0;
+        for (var y = 0; y < BoardSize; y++)
+        for (var x = 0; x < BoardSize; x++)
+            grid[x, y] = new Cell(x, y, tiles[i++]);
     }
 
-    public Tile GetTile(Vector2Int coords)
+    public IEnumerable<Cell> GetValues()
     {
-        var foundTiles = tiles
-            .Select(x => x)
-            .Where(x => x.coords == coords)
-            .ToList();
-        if (foundTiles.Count != 1) throw new ArgumentException("Tile not found"); 
-        return foundTiles.First();
-    }
-
-    public Vector3 GetSpotPosition(Tile tile)
-    {
-        return tile.transform.position + new Vector3(0, TileHeight, 0);
-    }
-
-    public Vector3 OccupyTileOn(Vector2Int coords)
-    {
-        var tile = GetTile(coords);
-        tile.occupied = true;
-        return tile.transform.position + new Vector3(0, TileHeight, 0);
-    }
-
-    public void ReleaseTileOn(Vector2Int coords)
-    {
-        var tile = GetTile(coords);
-        tile.occupied = false;
-    }
-
-    public Vector3 Occupy(Tile tile)
-    {
-        tile.occupied = true;
-        return tile.transform.position + new Vector3(0, TileHeight, 0);
+        for (var x = 0; x < BoardSize; x++)
+        for (var y = 0; y < BoardSize; y++)
+            yield return grid[x, y];
     }
 }

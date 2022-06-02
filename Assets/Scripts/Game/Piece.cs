@@ -6,9 +6,20 @@ using UnityEngine;
 public abstract class Piece : MonoBehaviour
 {
     public string title;
-    public string Damage { get; set; }
-    public string Health { get; set; }
-    public Vector2Int Coords { get; set; }
+    public int damage;
+    public int health;
+    public int x;
+    public int y;
     public PieceStatus pieceStatus;
-    public List<Vector2Int> interactionCoords;
+    public SideType sideType;
+    public HashSet<(SideType, (int x, int y))> InteractionSpots;
+
+    public void Interact((int x, int y) coords, Board board)
+    {
+        var piece = board[coords.x, coords.y].Piece;
+        if (piece)
+        {
+            piece.health -= damage;
+        }
+    }
 }

@@ -1,39 +1,47 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
-    public Player ally;
-    public Player enemy;
+    public Player[] unityPlayers;
     private Player activePlayer;
+
+    private Dictionary<SideType, Player> players;
 
     private void Start()
     {
-        activePlayer = ally;
-        activePlayer.InitializePiece(new Vector2Int(0, 0), "Penguin");
-        activePlayer.InitializePiece(new Vector2Int(1, 0), "Penguin");
-        enemy.InitializePiece(new Vector2Int(1, 0), "Perry");
+        players = new Dictionary<SideType, Player>();
+        FormPlayers();
+        activePlayer = players[SideType.Ally];
+        activePlayer.InitializePiece((0, 0), "Penguin");
+        activePlayer.InitializePiece((1, 0), "Penguin");
+        players[SideType.Enemy].InitializePiece((0, 0), "Perry");
     }
 
-    public void OnClick(Vector3 inputPosition, GameObject go)
+    private void FormPlayers()
+    {
+        foreach (var player in unityPlayers) players.Add(player.sideType, player);
+    }
+
+    public void OnClick(GameObject go)
     {
         if (go.CompareTag("Character")) OnCharacterClick(go);
         else if (go.CompareTag("Inventory")) OnInventoryClick();
         else if (go.CompareTag("AddButton")) OnAddButtonClick();
-        else if (go.CompareTag("InteractionSpot")) OnInteractionSpotClick();
+        else if (go.CompareTag("SpotToInteract")) OnSpotToInteractClick(go);
+        else if (go.CompareTag("SpotToPlace")) SpotToPlaceClick(go);
     }
 
-    private void OnInteractionSpotClick()
+    private void SpotToPlaceClick(GameObject go)
     {
-        if (!activePlayer.SelectedPiece) return;
-        // var tile = go.GetComponent<Tile>();
-        // if (tile.occupied) return;
-        // var inInventory = activePlayer.inventory.Contains(activePlayer.SelectedPiece);
-        // if (inInventory) activePlayer.RemoveFromInventory(activePlayer.SelectedPiece);
-        // activePlayer.Move(activePlayer.SelectedPiece, tile, inInventory);
-        // activePlayer.DeselectPiece(false);
+        var spot = go.GetComponent<InteractionSpot>();
+        activePlayer.SetPieceOn((spot.x, spot.y));
+    }
+
+    private void OnSpotToInteractClick(GameObject go)
+    {
+        var spot = go.GetComponent<InteractionSpot>();
+        activePlayer.Interact((spot.x, spot.y), players[spot.sideType].board);
     }
 
     private void OnAddButtonClick()
@@ -53,19 +61,24 @@ public class GameController : MonoBehaviour
     private void OnCharacterClick(GameObject go)
     {
         var piece = go.GetComponent<Piece>();
-        if (activePlayer.SelectedPiece)
+        if (piece.sideType == activePlayer.sideType)
         {
-            if (activePlayer.SelectedPiece == piece) 
-                activePlayer.DeselectPiece();
-            else if (activePlayer.SelectedPiece != piece)
+            if (activePlayer.SelectedPiece)
             {
-                activePlayer.DeselectPiece();
-                activePlayer.SelectPiece(piece, 
-                    piece.pieceStatus != PieceStatus.InInventory);
+                if (activePlayer.SelectedPiece == piece)
+                    activePlayer.DeselectPiece();
+                else if (activePlayer.SelectedPiece != piece)
+                {
+                    activePlayer.DeselectPiece();
+                    activePlayer.SelectPiece(piece, players);
+                }
             }
+            else
+                activePlayer.SelectPiece(piece, players);
         }
-        else 
-            activePlayer.SelectPiece(piece, 
-                piece.pieceStatus != PieceStatus.InInventory);
+        else
+        {
+            Debug.Log("It's enemy piece");
+        }
     }
 }

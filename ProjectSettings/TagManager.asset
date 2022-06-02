@@ -10,6 +10,8 @@ TagManager:
   - Inventory
   - AddButton
   - InteractionSpot
+  - SpotToPlace
+  - SpotToInteract
   layers:
   - Default
   - TransparentFX

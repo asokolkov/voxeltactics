@@ -2,6 +2,7 @@
 
 public class InteractionSpot : MonoBehaviour
 {
-    public TileType tileType;
-    public Vector2Int coords;
+    public SideType sideType;
+    public int x;
+    public int y;
 }

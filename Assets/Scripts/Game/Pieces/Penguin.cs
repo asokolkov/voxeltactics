@@ -6,9 +6,11 @@ public class Penguin : Piece
 {
     private void Awake()
     {
-        interactionCoords = new List<Vector2Int>
+        InteractionSpots = new HashSet<(SideType, (int x, int y))>
         {
-            new(2, 2), new(2, 1), new(2, 0)
+            (SideType.Ally, (0, 0)),
+            (SideType.Ally, (0, 1)),
+            (SideType.Enemy, (0, 0))
         };
     }
 }

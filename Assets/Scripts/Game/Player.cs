@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
+using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(PieceCreator))]
 public class Player : MonoBehaviour
 {
+    public SideType sideType;
     public Board board;
     public Inventory inventory;
     public InteractionSpot interactionSpot;
     
     [NonSerialized] public Piece SelectedPiece;
     [NonSerialized] public List<InteractionSpot> ShownInteractionSpots;
-    [NonSerialized] public List<Piece> Pieces;
     private PieceCreator pieceCreator;
     
     private const float Raise = 0.2f;
@@ -21,87 +21,101 @@ public class Player : MonoBehaviour
     {
         ShownInteractionSpots = new List<InteractionSpot>();
         pieceCreator = GetComponent<PieceCreator>();
-        Pieces = new List<Piece>();
+    }
+    
+    public void InitializePiece((int x, int y) coords, string title)
+    {
+        var piece = pieceCreator.CreatePiece(title).GetComponent<Piece>();
+        piece.sideType = sideType;
+        board[coords.x, coords.y].Piece = piece;
+        board[coords.x, coords.y].Status = CellStatus.Occupied;
+        piece.transform.position = board[coords.x, coords.y].Position;
     }
 
-    public void SelectPiece(Piece piece, bool showInteractions = false)
+    public void SelectPiece(Piece piece, Dictionary<SideType, Player> players)
     {
         SelectedPiece = piece;
         piece.transform.position += new Vector3(0, Raise, 0);
-        if (showInteractions) ShowInteractions();
+        if (piece.pieceStatus == PieceStatus.InInventory) ShowPlaceSpots();
+        else ShowInteractionSpots(players);
     }
-
-    private void ShowInteractions()
-    {
-        foreach (var coords in SelectedPiece.interactionCoords)
-        {
-            var tile = board.GetTile(coords);
-            var spot = Instantiate(interactionSpot, board.GetSpotPosition(tile), 
-                Quaternion.identity);
-            spot.coords = coords;
-            ShownInteractionSpots.Add(spot);
-        }
-    }
-
+    
     public void DeselectPiece(bool drop = true)
     {
         if (drop) SelectedPiece.transform.position -= new Vector3(0, Raise, 0);
         SelectedPiece = null;
         HideInteractions();
     }
-
-    private void HideInteractions()
+    
+    public void Interact((int x, int y) coords, Board b)
     {
-        foreach (var spot in ShownInteractionSpots)
-        {
-            Destroy(spot.gameObject);
-        }
-        ShownInteractionSpots.Clear();
-    }
-
-    public void InitializePiece(Vector2Int coords, string title)
-    {
-        var piece = pieceCreator.CreatePiece(title).GetComponent<Piece>();
-        Pieces.Add(piece);
-        piece.Coords = coords;
-        piece.transform.position = board.OccupyTileOn(coords);
+        SelectedPiece.Interact(coords, b);
+        DeselectPiece();
     }
     
-    public void Move(Piece piece, Vector2Int coords)
+    public void SetPieceOn((int x, int y) coords)
     {
-        /* if (!fromInventory)*/ board.ReleaseTileOn(piece.Coords);
-        piece.Coords = coords;
-        piece.transform.position = board.OccupyTileOn(coords);
+        SelectedPiece.x = coords.x;
+        SelectedPiece.y = coords.y;
+        SelectedPiece.transform.position = board[coords.x, coords.y].Position;
+        board[coords.x, coords.y].Status = CellStatus.Occupied;
+        RemoveFromInventory(SelectedPiece);
+        DeselectPiece(false);
     }
-
-    public void Move(Piece piece, Tile tile, bool fromInventory = false)
+    
+    private void ShowPlaceSpots()
     {
-        if (!fromInventory) board.ReleaseTileOn(piece.Coords);
-        piece.Coords = tile.coords;
-        piece.transform.position = board.Occupy(tile);
+        foreach (var spot in board.GetValues()
+                     .Where(x => x.Status == CellStatus.Vacant))
+            ShownInteractionSpots.Add(InitializeSpot(spot.Position, 
+                "SpotToPlace", sideType, (spot.X, spot.Y)));
     }
-
+    
+    private void ShowInteractionSpots(Dictionary<SideType, Player> players)
+    {
+        foreach (var (sType, coords) in SelectedPiece.InteractionSpots)
+            ShownInteractionSpots.Add(InitializeSpot(
+                players[sType].board[coords.x, coords.y].Position,
+                "SpotToInteract", sType, coords));
+    }
+    
+    private InteractionSpot InitializeSpot(Vector3 position, string spotTag, 
+        SideType sideType, (int x, int y) coords)
+    {
+        var spot = Instantiate(interactionSpot, position, Quaternion.identity);
+        spot.tag = spotTag;
+        spot.sideType = sideType;
+        spot.x = coords.x;
+        spot.y = coords.y;
+        return spot;
+    }
+    
+    private void HideInteractions()
+    {
+        foreach (var spot in ShownInteractionSpots) Destroy(spot.gameObject);
+        ShownInteractionSpots.Clear();
+    }
+    
     public void MoveToInventory(Piece piece)
     {
-        piece.pieceStatus = PieceStatus.InInventory;
-        board.ReleaseTileOn(piece.Coords);
+        board[piece.x, piece.y].Status = CellStatus.Vacant;
         DeselectPiece();
         inventory.Add(piece);
     }
-
+    
     public void RemoveFromInventory(Piece piece)
     {
-        piece.pieceStatus = PieceStatus.Onboard;
         inventory.Remove(piece);
     }
-
+    
     public void AddRandomPieceToInventory()
     {
         var maxReached = inventory.Pieces.Count == inventory.maxPiecesAmount &&
-                inventory.Pieces[^1].title == "AddButton";
+                         inventory.Pieces[^1].title == "AddButton";
         if (maxReached) inventory.DestroyAddButton();
         var piece = pieceCreator.CreateRandomPiece().GetComponent<Piece>();
-        Pieces.Add(piece);
+        piece.pieceStatus = PieceStatus.InInventory;
+        piece.sideType = sideType;
         inventory.Add(piece, maxReached);
     }
 }

@@ -130,6 +130,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   title: Penguin
+  damage: 5
+  health: 20
+  coords: {x: 0, y: 0}
+  pieceStatus: 0
+  boardType: 2
 --- !u!65 &3646742275996337417
 BoxCollider:
   m_ObjectHideFlags: 0

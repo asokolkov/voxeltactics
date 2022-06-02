@@ -47,8 +47,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   title: Perry
-  allyInteractionPositions: []
-  enemyInteractionPositions: []
+  damage: 1
+  health: 30
+  coords: {x: 0, y: 0}
+  pieceStatus: 0
+  boardType: 1
 --- !u!65 &8863791752647450492
 BoxCollider:
   m_ObjectHideFlags: 0

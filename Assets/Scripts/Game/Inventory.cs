@@ -31,6 +31,7 @@ public class Inventory : MonoBehaviour
 
     public void Add(Piece piece, bool toEnd = false, bool center = true)
     {
+        piece.pieceStatus = PieceStatus.InInventory;
         var piecesAmount = Pieces.Count;
         if (piecesAmount >= maxPiecesAmount) return;
         if (toEnd) Pieces.Add(piece);
@@ -68,6 +69,7 @@ public class Inventory : MonoBehaviour
 
     public void Remove(Piece piece)
     {
+        piece.pieceStatus = PieceStatus.Onboard;
         Pieces.Remove(piece);
         piece.transform.rotation = Quaternion.identity;
         if (Pieces[^1].title != "AddButton") InitializeAddButton(false);

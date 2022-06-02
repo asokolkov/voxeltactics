@@ -13,6 +13,6 @@ public class InputHandler : MonoBehaviour, IInputHandler
     
     public void ProcessInput(Vector3 inputPosition, GameObject selectedObject, Action callback)
     {
-        gameController.OnClick(inputPosition, selectedObject);
+        gameController.OnClick(selectedObject);
     }
 }

@@ -5,9 +5,10 @@ public class Perry : Piece
 {
     private void Awake()
     {
-        interactionCoords = new List<Vector2Int>
+        InteractionSpots = new HashSet<(SideType, (int x, int y))>
         {
-            new(0, 2), new(0, 2), new(0, 2)
+            (SideType.Ally, (1, 1)),
+            (SideType.Enemy, (0, 1)),
         };
     }
 }
