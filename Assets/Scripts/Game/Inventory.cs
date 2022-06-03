@@ -69,7 +69,7 @@ public class Inventory : MonoBehaviour
 
     public void Remove(Piece piece)
     {
-        piece.pieceStatus = PieceStatus.Onboard;
+        piece.pieceStatus = PieceStatus.OnBoard;
         Pieces.Remove(piece);
         piece.transform.rotation = Quaternion.identity;
         if (Pieces[^1].title != "AddButton") InitializeAddButton(false);

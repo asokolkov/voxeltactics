@@ -6,8 +6,8 @@ public class Cell
     public CellStatus Status;
     public Tile Tile;
     public Vector3 Position;
-    public int X;
-    public int Y;
+    public readonly int X;
+    public readonly int Y;
     
     private const float TileHeight = 1;
 

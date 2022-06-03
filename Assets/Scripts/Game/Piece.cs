@@ -17,9 +17,12 @@ public abstract class Piece : MonoBehaviour
     public void Interact((int x, int y) coords, Board board)
     {
         var piece = board[coords.x, coords.y].Piece;
-        if (piece)
-        {
-            piece.health -= damage;
-        }
+        if (piece) piece.health -= damage;
+        if (piece.health <= 0) 
+            Debug.Log($"{piece.sideType} lost!");
     }
+
+    public abstract void InteractFront((int x, int y) coords, Board board);
+    public abstract void InteractCenter((int x, int y) coords, Board board);
+    public abstract void InteractBack((int x, int y) coords, Board board);
 }

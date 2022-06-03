@@ -1,4 +1,4 @@
-﻿public enum InteractionCoords
+﻿public enum InteractionType
 {
     None, Ally, Enemy, Both,
     

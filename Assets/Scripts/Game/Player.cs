@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 
 [RequireComponent(typeof(PieceCreator))]
@@ -10,11 +11,13 @@ public class Player : MonoBehaviour
     public Board board;
     public Inventory inventory;
     public InteractionSpot interactionSpot;
+    public TMP_Text textManager;
+    public int actionsAmount;
     
     [NonSerialized] public Piece SelectedPiece;
     [NonSerialized] public List<InteractionSpot> ShownInteractionSpots;
     private PieceCreator pieceCreator;
-    
+
     private const float Raise = 0.2f;
 
     private void Awake()
@@ -50,6 +53,7 @@ public class Player : MonoBehaviour
     public void Interact((int x, int y) coords, Board b)
     {
         SelectedPiece.Interact(coords, b);
+        textManager.text = actionsAmount + " actions";
         DeselectPiece();
     }
     
@@ -83,13 +87,22 @@ public class Player : MonoBehaviour
         SideType sideType, (int x, int y) coords)
     {
         var spot = Instantiate(interactionSpot, position, Quaternion.identity);
+        ChangeSpotColor(spot, coords);
         spot.tag = spotTag;
         spot.sideType = sideType;
         spot.x = coords.x;
         spot.y = coords.y;
         return spot;
     }
-    
+
+    private void ChangeSpotColor(InteractionSpot spot, (int x, int y) coords)
+    {
+        var spotRenderer = spot.gameObject.GetComponent<Renderer>();
+        if (coords.x == 0) spotRenderer.material.color = Color.cyan;
+        else if (coords.x == 1) spotRenderer.material.color = Color.green;
+        else if (coords.x == 2) spotRenderer.material.color = Color.red;
+    }
+
     private void HideInteractions()
     {
         foreach (var spot in ShownInteractionSpots) Destroy(spot.gameObject);

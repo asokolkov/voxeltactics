@@ -1,4 +1,4 @@
 ﻿public enum PieceStatus
 {
-    DoesntExist, InDeck, InInventory, Onboard
+    DoesntExist, InDeck, InInventory, OnBoard
 }
