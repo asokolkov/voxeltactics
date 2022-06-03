@@ -1,46 +1,47 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
     public Player[] unityPlayers;
-    private Player activePlayer;
+    private Player _activePlayer;
 
-    private Dictionary<SideType, Player> players;
+    private Dictionary<SideType, Player> _players;
 
     private void Start()
     {
-        players = new Dictionary<SideType, Player>();
+        _players = new Dictionary<SideType, Player>();
         FormPlayers();
         DisablePlayers();
         SetPlayer();
-        activePlayer.InitializePiece((0, 0), "Penguin");
-        activePlayer.InitializePiece((1, 0), "Penguin");
-        players[SideType.Enemy].InitializePiece((0, 0), "Perry");
+        _activePlayer.InitializePiece((0, 0), "Penguin");
+        _activePlayer.InitializePiece((1, 0), "Penguin");
+        _players[SideType.Enemy].InitializePiece((0, 0), "Perry");
     }
 
     private void DisablePlayers()
     {
-        foreach (var player in players.Values)
+        foreach (var player in _players.Values)
             TogglePlayer(player, false);
     }
 
     private void SetPlayer()
     {
-        if (activePlayer == null)
+        if (_activePlayer == null)
         {
-            activePlayer = players[SideType.Ally];
+            _activePlayer = _players[SideType.Ally];
         }
         else
         {
-            TogglePlayer(activePlayer, false);
-            activePlayer = activePlayer.sideType == SideType.Ally
-                ? players[SideType.Enemy]
-                : players[SideType.Ally];
+            TogglePlayer(_activePlayer, false);
+            _activePlayer = _activePlayer.sideType == SideType.Ally
+                ? _players[SideType.Enemy]
+                : _players[SideType.Ally];
         }
-        TogglePlayer(activePlayer, true);
+        TogglePlayer(_activePlayer, true);
     }
 
     private static void TogglePlayer(Player player, bool activate)
@@ -54,7 +55,7 @@ public class GameController : MonoBehaviour
 
     private void FormPlayers()
     {
-        foreach (var player in unityPlayers) players.Add(player.sideType, player);
+        foreach (var player in unityPlayers) _players.Add(player.sideType, player);
     }
 
     public void OnClick(GameObject go)
@@ -70,50 +71,51 @@ public class GameController : MonoBehaviour
     private void SpotToPlaceClick(GameObject go)
     {
         var spot = go.GetComponent<InteractionSpot>();
-        activePlayer.SetPieceOn((spot.x, spot.y));
+        if (spot.coords.Count != 1) throw new ArgumentException("Spot not found");
+        _activePlayer.SetPieceOn(spot.coords.First());
         CountAction();
     }
 
     private void OnSpotToInteractClick(GameObject go)
     {
         var spot = go.GetComponent<InteractionSpot>();
-        activePlayer.Interact((spot.x, spot.y), players[spot.sideType].board);
+        //_activePlayer.Interact(spot.coords, _players[spot.sideType].board);
         CountAction();
     }
 
     private void OnAddButtonClick()
     {
-        activePlayer.AddRandomPieceToInventory();
+        _activePlayer.AddRandomPieceToInventory();
         CountAction();
     }
 
     private void OnInventoryClick()
     {
-        if (!activePlayer.SelectedPiece) return;
-        if (activePlayer.inventory.Contains(activePlayer.SelectedPiece))
-            activePlayer.DeselectPiece();
+        if (!_activePlayer.SelectedPiece) return;
+        if (_activePlayer.inventory.Contains(_activePlayer.SelectedPiece))
+            _activePlayer.DeselectPiece();
         else
-            activePlayer.MoveToInventory(activePlayer.SelectedPiece);
+            _activePlayer.MoveToInventory(_activePlayer.SelectedPiece);
         CountAction();
     }
 
     private void OnCharacterClick(GameObject go)
     {
         var piece = go.GetComponent<Piece>();
-        if (piece.sideType == activePlayer.sideType)
+        if (piece.sideType == _activePlayer.sideType)
         {
-            if (activePlayer.SelectedPiece)
+            if (_activePlayer.SelectedPiece)
             {
-                if (activePlayer.SelectedPiece == piece)
-                    activePlayer.DeselectPiece();
-                else if (activePlayer.SelectedPiece != piece)
+                if (_activePlayer.SelectedPiece == piece)
+                    _activePlayer.DeselectPiece();
+                else if (_activePlayer.SelectedPiece != piece)
                 {
-                    activePlayer.DeselectPiece();
-                    activePlayer.SelectPiece(piece, players);
+                    _activePlayer.DeselectPiece();
+                    _activePlayer.SelectPiece(piece, _players);
                 }
             }
             else
-                activePlayer.SelectPiece(piece, players);
+                _activePlayer.SelectPiece(piece, _players);
         }
         else
         {
@@ -123,12 +125,12 @@ public class GameController : MonoBehaviour
     
     private void CountAction()
     {
-        activePlayer.actionsAmount--;
-        if (activePlayer.actionsAmount <= 0)
+        _activePlayer.actionsAmount--;
+        if (_activePlayer.actionsAmount <= 0)
         {
-            activePlayer.actionsAmount = 2;
+            _activePlayer.actionsAmount = 2;
             SetPlayer();
         }
-        activePlayer.textManager.text = activePlayer.actionsAmount + " actions";
+        _activePlayer.textManager.text = _activePlayer.actionsAmount + " actions";
     }
 }

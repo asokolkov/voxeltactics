@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44668055, g: 0.49653232, b: 0.5748792, a: 1}
+  m_IndirectSpecularColor: {r: 0.44668072, g: 0.49653268, b: 0.57487994, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -300,7 +300,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventoryCollider: {fileID: 1663468015}
   addButton: {fileID: 4374867152985897248, guid: da82bef0df1597348a3e81cbf321e515, type: 3}
-  maxPiecesAmount: 6
+  maxPiecesAmount: 46
 --- !u!4 &296265463
 Transform:
   m_ObjectHideFlags: 0
@@ -348,7 +348,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventoryCollider: {fileID: 179110055}
   addButton: {fileID: 4374867152985897248, guid: da82bef0df1597348a3e81cbf321e515, type: 3}
-  maxPiecesAmount: 6
+  maxPiecesAmount: 4
 --- !u!4 &381642755
 Transform:
   m_ObjectHideFlags: 0
@@ -1337,9 +1337,11 @@ MonoBehaviour:
   sideType: 2
   board: {fileID: 485135524}
   inventory: {fileID: 381642754}
-  interactionSpot: {fileID: 795575266665332354, guid: 93232475381119145b26e4541bf49810, type: 3}
   textManager: {fileID: 1503990900}
   actionsAmount: 2
+  singleSpot: {fileID: 795575266665332354, guid: 93232475381119145b26e4541bf49810, type: 3}
+  fullSpot: {fileID: -7791445526641998465, guid: b8b8c689a27935347bece7c490a4a6ad, type: 3}
+  rowSpot: {fileID: 6000062322493333434, guid: e8b106ab2e66988449eedbbab03f3b14, type: 3}
 --- !u!114 &1942741693
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1388,9 +1390,11 @@ MonoBehaviour:
   sideType: 1
   board: {fileID: 1109684549}
   inventory: {fileID: 296265462}
-  interactionSpot: {fileID: 795575266665332354, guid: 93232475381119145b26e4541bf49810, type: 3}
   textManager: {fileID: 1588935969}
   actionsAmount: 2
+  singleSpot: {fileID: 795575266665332354, guid: 93232475381119145b26e4541bf49810, type: 3}
+  fullSpot: {fileID: -7791445526641998465, guid: b8b8c689a27935347bece7c490a4a6ad, type: 3}
+  rowSpot: {fileID: 6000062322493333434, guid: e8b106ab2e66988449eedbbab03f3b14, type: 3}
 --- !u!4 &1969079544
 Transform:
   m_ObjectHideFlags: 0

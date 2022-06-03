@@ -7,27 +7,27 @@ using Random = System.Random;
 public class PieceCreator : MonoBehaviour
 { 
     public GameObject[] piecesPrefabs;
-    private readonly Dictionary<string, GameObject> piecesDict = new();
+    private readonly Dictionary<string, GameObject> _piecesDict = new();
     private static readonly Random Random = new();
 
     private void Awake()
     {
         foreach (var piece in piecesPrefabs)
         {
-            piecesDict.Add(piece.GetComponent<Piece>().title, piece);
+            _piecesDict.Add(piece.GetComponent<Piece>().title, piece);
         }
     }
 
     public GameObject CreatePiece(string title)
     {
-        var prefab = piecesDict[title];
+        var prefab = _piecesDict[title];
         return prefab ? Instantiate(prefab) : null;
     }
 
     private string GetRandomPieceTitle()
     {
-        var values = piecesDict.Keys.ToList();
-        return values[Random.Next(piecesDict.Count)];
+        var values = _piecesDict.Keys.ToList();
+        return values[Random.Next(_piecesDict.Count)];
     }
 
     public GameObject CreateRandomPiece()

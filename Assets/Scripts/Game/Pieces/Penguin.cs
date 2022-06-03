@@ -6,12 +6,9 @@ public class Penguin : Piece
 {
     private void Awake()
     {
-        InteractionSpots = new HashSet<(SideType, (int x, int y))>
+        InteractionSpots = new HashSet<(SideType, InteractionType)>
         {
-            (SideType.Ally, (0, 0)),
-            (SideType.Ally, (0, 1)),
-            (SideType.Enemy, (0, 0)),
-            (SideType.Ally, (2, 2))
+            (SideType.Ally, InteractionType.Left)
         };
     }
 

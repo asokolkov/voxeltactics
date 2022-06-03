@@ -2,19 +2,16 @@
 
 public class Cell
 {
-    public Piece Piece;
     public CellStatus Status;
     public Tile Tile;
     public Vector3 Position;
-    public readonly int X;
-    public readonly int Y;
+    public Vector2Int Coords;
     
     private const float TileHeight = 1;
 
-    public Cell(int x, int y, Tile tile)
+    public Cell(Vector2Int coords, Tile tile)
     {
-        X = x;
-        Y = y;
+        Coords = coords;
         Tile = tile;
         Status = CellStatus.Vacant;
         Position = tile.transform.position + new Vector3(0, TileHeight, 0);
